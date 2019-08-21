@@ -11,4 +11,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\Samim.BusinessLayer\Samim.BusinessLayer.csproj" />
+    <ProjectReference Include="..\Samim.DataLayer\Samim.DataLayer.csproj" />
+  </ItemGroup>
+
 </Project>
