@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Samim.BusinessLayer.Services;
+using Samim.DomainLayer;
 
 namespace Samim.DataLayer.Context
 {
@@ -21,6 +22,7 @@ namespace Samim.DataLayer.Context
 			}
 		}
 
+		public DbSet<SideBarMenu> SideBarMenu { get; set; }
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
