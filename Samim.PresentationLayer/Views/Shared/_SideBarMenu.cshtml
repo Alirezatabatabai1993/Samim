@@ -1,0 +1,34 @@
+﻿@inject Samim.BusinessLayer.Services.ISideBarMenuService sideBarMenu
+@{
+	var menuItems = sideBarMenu.GetVMSideBarMenuItems();
+}
+
+<style>
+	.SideBarMenuAnchorTag {
+		color: black;
+		margin-left: 5px;
+	}
+		.SideBarMenuAnchorTag:hover {
+			color: black;
+		}
+
+	.SideBarMenuUlTag {
+		list-style-type: none;
+	}
+
+	.SideBarMenuLiTag {
+		margin-top: 5px;
+	}
+</style>
+
+<script>
+	$("body").on("click", "a", function () {
+	})
+</script>
+
+<input class="form-control form-control-sm" placeholder="Search!!" />
+
+@if (menuItems != null)
+{
+	<partial name="_SideBarMenuBody" model="menuItems" />
+}

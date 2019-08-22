@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Samim.BusinessLayer.Services;
 using Samim.DataLayer.Context;
+using Samim.DataLayer.UnitOfWork;
 
 namespace Samim.PresentationLayer
 {
@@ -42,6 +43,8 @@ namespace Samim.PresentationLayer
 
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+			services.AddTransient<ISideBarMenuService, SideBarMenuService>();
+			services.AddScoped(typeof(IBaseRepository<>),typeof(BaseRepository<>));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

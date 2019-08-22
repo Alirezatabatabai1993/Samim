@@ -12,14 +12,16 @@ namespace Samim.ViewModel
 		{
 
 		}
-		public VMSideBarMenu(SideBarMenu dBSideBarMenu)
+		public VMSideBarMenu(SideBarMenu sideBarMenu)
 		{
-			Id = dBSideBarMenu.Id;
-			Title = dBSideBarMenu.Title;
-			HasParent = dBSideBarMenu.ParentId != null;
+			Id = sideBarMenu.Id;
+			ParentId = sideBarMenu.ParentId;
+			Title = sideBarMenu.Title;
+			HasParent = sideBarMenu.ParentId != null;
 		}
 
 		public Guid Id { get; set; }
+		public Guid? ParentId { get; set; }
 		public string Title { get; set; }
 		public List<VMSideBarMenu> Children { get; set; } = new List<VMSideBarMenu>();
 		public bool HasChildren => Children.Any();
