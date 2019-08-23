@@ -6,10 +6,8 @@
 		<li class="SideBarMenuLiTag">
 			@if (item.HasChildren)
 			{
-				@*<i class="fa fa-folder-o"></i>
-					<i class="fa fa-folder-open-o"></i>*@
 				<div class="row">
-					<span class="fa fa-folder-o"></span><a class="SideBarMenuAnchorTag" data-target="#@("div"+item.Id)" data-toggle="collapse">@item.Title</a>
+					<span id="@("span"+item.Id)" class="fa fa-folder-o"></span><a id="@item.Id" class="SideBarMenuAnchorTag" data-target="#@("div"+item.Id)" data-toggle="collapse">@item.Title</a>
 				</div>
 				<div class="collapse" id="@("div"+item.Id)">
 					<partial name="_SideBarMenuBody" model="item.Children" />

@@ -1,34 +1,44 @@
 ﻿@inject Samim.BusinessLayer.Services.ISideBarMenuService sideBarMenu
 @{
-	var menuItems = sideBarMenu.GetVMSideBarMenuItems();
+    var menuItems = sideBarMenu.GetVMSideBarMenuItems();
 }
 
 <style>
-	.SideBarMenuAnchorTag {
-		color: black;
-		margin-left: 5px;
-	}
-		.SideBarMenuAnchorTag:hover {
-			color: black;
-		}
+    .SideBarMenuAnchorTag {
+        color: black;
+        margin-left: 5px;
+    }
 
-	.SideBarMenuUlTag {
-		list-style-type: none;
-	}
+        .SideBarMenuAnchorTag:hover {
+            color: black;
+        }
 
-	.SideBarMenuLiTag {
-		margin-top: 5px;
-	}
+    .SideBarMenuUlTag {
+        list-style-type: none;
+    }
+
+    .SideBarMenuLiTag {
+        margin-top: 5px;
+    }
 </style>
 
-<script>
-	$("body").on("click", "a", function () {
-	})
+<script type="text/javascript">
+    $("body").on("click", "a", function (event) {
+        var anchorTagId = event.target.id;
+        var spanTagElement = document.getElementById("span" + anchorTagId);
+        var divTagElement = document.getElementById("div" + anchorTagId);
+        if (divTagElement.classList.contains("show")) {
+            spanTagElement.classList.replace("fa-folder-open-o","fa-folder-o");
+        }
+        else {
+            spanTagElement.classList.replace("fa-folder-o","fa-folder-open-o");
+        }
+    });
 </script>
 
-<input class="form-control form-control-sm" placeholder="Search!!" />
+<input class="form-control form-control-sm" placeholder="Search!!" name="search" />
 
 @if (menuItems != null)
 {
-	<partial name="_SideBarMenuBody" model="menuItems" />
+    <partial name="_SideBarMenuBody" model="menuItems" />
 }
