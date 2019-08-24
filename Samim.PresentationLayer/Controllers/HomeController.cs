@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Samim.PresentationLayer.Models;
 
@@ -10,14 +11,18 @@ namespace Samim.PresentationLayer.Controllers
 {
 	public class HomeController : Controller
 	{
-		public IActionResult Index()
+		public IActionResult Index(string filter)
+		{
+			return View();
+		}
+		public IActionResult Privacy()
 		{
 			return View();
 		}
 
-		public IActionResult Privacy()
+		public IActionResult Filter(string filter)
 		{
-			return View();
+			return RedirectToAction(nameof(Index), new { filter });
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

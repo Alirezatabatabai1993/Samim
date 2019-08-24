@@ -32,7 +32,7 @@ namespace Samim.DataLayer.UnitOfWork
 	}
 	public class BaseRepository<T> : IBaseRepository<T> where T : class
 	{
-		private SamimDbContext _context;
+		internal SamimDbContext _context;
 
 		public BaseRepository(SamimDbContext context)
 		{

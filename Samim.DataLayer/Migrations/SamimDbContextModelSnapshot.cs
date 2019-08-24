@@ -184,6 +184,21 @@ namespace Samim.DataLayer.Migrations
                     b.ToTable("UserToken");
                 });
 
+            modelBuilder.Entity("Samim.DomainLayer.SideBarMenu", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("ParentId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SideBarMenu");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")

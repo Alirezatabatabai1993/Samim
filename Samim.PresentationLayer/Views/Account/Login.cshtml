@@ -1,0 +1,81 @@
+﻿@model Samim.ViewModel.VMLogin
+
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<style>
+	body {
+		background-image: url('rhand-mccoy-4sugk6t64rc-unsplash.jpg');
+	}
+
+	.centered {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		margin-top: -100px;
+		margin-left: -100px;
+	}
+
+	.titleCentered {
+		position: fixed;
+		top: 10%;
+		left: 50%;
+		margin-left: -100px;
+	}
+
+	.inner-addon {
+		position: relative;
+	}
+
+		.inner-addon .fa {
+			position: absolute;
+			padding: 10px;
+			pointer-events: none;
+		}
+
+	.left-addon .fa {
+		left: 0px;
+	}
+
+	.right-addon .fa {
+		right: 0px;
+	}
+
+	.left-addon input {
+		padding-left: 30px;
+	}
+
+	.right-addon input {
+		padding-right: 30px;
+	}
+</style>
+
+<h1 class="titleCentered">Wellcome</h1>
+
+<div class="centered">
+	<form method="post" asp-action="Login" asp-controller="Account">
+		<div class="form-group">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<label asp-for="UserName"></label>
+			<div class="inner-addon left-addon">
+				<i class="fa fa-user fa-sm"></i>
+				<input class="form-control form-control-sm" type="text" name="userName" />
+				<span asp-validation-for="UserName" class="text-danger"></span>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Password"></label>
+			<div class="inner-addon left-addon">
+				<i class="fa fa-key fa-sm"></i>
+				<input class="form-control form-control-sm" type="password" name="password" />
+				<span asp-validation-for="Password" class="text-danger"></span>
+			</div>
+		</div>
+
+		<button class="btn btn-primary btn-sm" type="submit"><span class="fa fa-sign-in"></span> Login</button>
+		<button class="btn btn-link" type="reset"><span class="fa fa-refresh"></span></button>
+	</form>
+</div>

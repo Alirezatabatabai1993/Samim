@@ -1,0 +1,61 @@
+﻿@using Samim.ViewModel
+@inject Samim.BusinessLayer.Services.ISideBarMenuService sideBarMenu
+@{
+	var filter = Context.Request.Query["filter"].ToString();
+	var menuItems = new List<VMSideBarMenu>();
+	if (string.IsNullOrWhiteSpace(filter))
+	{
+		menuItems = sideBarMenu.GetVMSideBarMenuItems();
+	}
+	else
+	{
+		menuItems = sideBarMenu.GetVMSideBarMenuItemsByFilter(filter);
+	}
+}
+
+<style>
+	.SideBarMenuAnchorTag {
+		color: black;
+		margin-left: 5px;
+	}
+
+		.SideBarMenuAnchorTag:hover {
+			color: black;
+		}
+
+	.SideBarMenuUlTag {
+		list-style-type: none;
+	}
+
+	.SideBarMenuLiTag {
+		margin-top: 5px;
+	}
+
+	#sideBarMenuFilter:hover {
+		border-color: blue;
+	}
+
+</style>
+
+<script type="text/javascript">
+	$("body").on("click", "a", function (event) {
+		var anchorTagId = event.target.id;
+		var spanTagElement = document.getElementById("span" + anchorTagId);
+		var divTagElement = document.getElementById("div" + anchorTagId);
+		if (divTagElement.classList.contains("show")) {
+			spanTagElement.classList.replace("fa-folder-open-o", "fa-folder-o");
+		}
+		else {
+			spanTagElement.classList.replace("fa-folder-o", "fa-folder-open-o");
+		}
+	});
+</script>
+
+<form asp-action="Filter" asp-controller="home" method="post">
+	<input id="sideBarMenuFilter" class="form-control form-control-sm" value="@filter" placeholder="Search!!" name="filter" />
+</form>
+
+@if (menuItems != null)
+{
+	<partial name="_SideBarMenuBody" model="menuItems" />
+}
