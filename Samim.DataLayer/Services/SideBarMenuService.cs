@@ -6,55 +6,38 @@ using Samim.DomainLayer;
 using Samim.DataLayer.Context;
 using System.Linq;
 using Samim.DataLayer.UnitOfWork;
+using Samim.DataLayer.UnitOfWork.SideBarMenuRepo;
+using Samim.DataLayer.Helpers;
 
 namespace Samim.BusinessLayer.Services
 {
 	public interface ISideBarMenuService
 	{
 		List<VMSideBarMenu> GetVMSideBarMenuItems();
+		List<VMSideBarMenu> GetVMSideBarMenuItemsByFilter(string filter);
 	}
 
 	public class SideBarMenuService : ISideBarMenuService
 	{
-		private readonly IBaseRepository<SideBarMenu> _baseRepository;
+		private readonly ISideBarMenuRepository _sideBarMenuRepository;
 
-		public SideBarMenuService(IBaseRepository<SideBarMenu> baseRepository)
+		public SideBarMenuService(ISideBarMenuRepository sideBarMenuRepository)
 		{
-			_baseRepository = baseRepository;
+			_sideBarMenuRepository = sideBarMenuRepository;
 		}
 
 		public List<VMSideBarMenu> GetVMSideBarMenuItems()
 		{
-			var vmSideBarMenuItems = _baseRepository.GetAll().GetAwaiter().GetResult();
-			var returningMenuItems = new List<VMSideBarMenu>();
-			foreach (var menuItem in vmSideBarMenuItems.Where(x => x.ParentId == null))
-			{
-				var sideBarMenuItem = new VMSideBarMenu(menuItem);
-				if (!sideBarMenuItem.HasParent)
-				{
-					if (vmSideBarMenuItems.Any(x => x.ParentId == sideBarMenuItem.Id))
-					{
-						var children = vmSideBarMenuItems.Where(x => x.ParentId == sideBarMenuItem.Id).Select(x => new VMSideBarMenu(x)).ToList();
-						var sideBarItems = vmSideBarMenuItems.Select(x => new VMSideBarMenu(x)).ToList();
-						sideBarMenuItem.Children.AddRange(MakeParentChildRelations(children, sideBarItems));
-					}
-					returningMenuItems.Add(sideBarMenuItem);
-				}
-			}
-			return returningMenuItems;
+			return _sideBarMenuRepository.GetAll().GetAwaiter().GetResult().CreateChildren();
 		}
 
-		private List<VMSideBarMenu> MakeParentChildRelations(List<VMSideBarMenu> children, List<VMSideBarMenu> allVMSideBarMenuItems)
+		public List<VMSideBarMenu> GetVMSideBarMenuItemsByFilter(string filter)
 		{
-			foreach (var child in children)
-			{
-				if (allVMSideBarMenuItems.Any(x => x.ParentId == child.Id))
-				{
-					var childsChildren = allVMSideBarMenuItems.Where(x => x.ParentId == child.Id).ToList();
-					child.Children.AddRange(MakeParentChildRelations(childsChildren, allVMSideBarMenuItems));
-				}
-			}
-			return children;
+			var menuItemsWithParentChildRealation = _sideBarMenuRepository.GetAll().GetAwaiter().GetResult().CreateChildren().ToList();
+			var flattenMenuItems = menuItemsWithParentChildRealation.Flatten(x => x.Children).ToList();
+			var SearchOnFlattenMenuItems = flattenMenuItems.Where(x => x.Title.ToLower().Contains(filter.ToLower())).ToList();
+			var searchedMenuItemsThatAreNotFolders = SearchOnFlattenMenuItems.Where(x => !x.HasChildren).ToList();
+			return searchedMenuItemsThatAreNotFolders;
 		}
 	}
 }
