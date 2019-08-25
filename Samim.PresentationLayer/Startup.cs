@@ -7,10 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Samim.BusinessLayer.Services;
+using Samim.DataLayer.AppUser;
 using Samim.DataLayer.Context;
 using Samim.DataLayer.UnitOfWork;
 using Samim.DataLayer.UnitOfWork.SideBarMenuRepo;
+using Samim.DataLayer.UnitOfWork.UserRepo;
 using Samim.PresentationLayer.Models;
+using Samim.ViewModel;
 
 namespace Samim.PresentationLayer
 {
@@ -32,7 +35,7 @@ namespace Samim.PresentationLayer
 
 			services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
 
-			services.AddIdentity<IdentityUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
+			services.AddIdentity<ApplicationUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
 			   .AddEntityFrameworkStores<SamimDbContext>().AddDefaultUI()
 			   .AddDefaultTokenProviders();
 
@@ -42,13 +45,10 @@ namespace Samim.PresentationLayer
 				options.CheckConsentNeeded = context => true;
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
-
-
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 			services.AddTransient<ISideBarMenuService, SideBarMenuService>();
 			services.AddTransient<ISideBarMenuRepository, SideBarMenuRepository>();
-			services.AddTransient<SignInManager<IdentityUser>>();
-			//services.AddScoped(typeof(IBaseRepository<>),typeof(BaseRepository<>));
+			services.AddTransient<IUserRepository, UserRepository>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

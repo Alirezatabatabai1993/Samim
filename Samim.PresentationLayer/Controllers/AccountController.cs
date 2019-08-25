@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Samim.DataLayer.AppUser;
 using Samim.PresentationLayer.Models;
 using Samim.ViewModel;
 
@@ -12,13 +13,11 @@ namespace Samim.PresentationLayer.Controllers
 {
 	public class AccountController : Controller
 	{
-		private readonly SignInManager<IdentityUser> _signInManager;
-		private readonly UserManager<IdentityUser> _userManager;
+		private readonly SignInManager<ApplicationUser> _signInManager;
 
-		public AccountController(SignInManager<IdentityUser> signInManager,UserManager<IdentityUser> userManager)
+		public AccountController(SignInManager<ApplicationUser> signInManager)
 		{
 			_signInManager = signInManager;
-			_userManager = userManager;
 		}
 		[HttpGet]
 		public IActionResult Login()

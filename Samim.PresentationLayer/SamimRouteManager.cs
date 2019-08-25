@@ -2,22 +2,12 @@
 {
 	public static class SamimRouteManager
 	{
-		public static class AdminRole
+		public static class User
 		{
-			public static string Controller = "AdminRole";
-			public static string Index()
-			{
-				return string.Format("/{0}/Index", Controller);
-			}
-
+			private static string Controller = "User";
 			public static string Create()
 			{
 				return string.Format("/{0}/Create", Controller);
-			}
-
-			public static string Edit()
-			{
-				return string.Format("/{0}/Edit", Controller);
 			}
 		}
 	}

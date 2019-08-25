@@ -1,0 +1,87 @@
+﻿@model Samim.ViewModel.VMUserCreateAndEdit
+
+
+<style>
+	.inner-addon {
+		position: relative;
+	}
+
+		.inner-addon .fa {
+			position: absolute;
+			padding: 10px;
+		}
+
+	.right-addon .fa {
+		right: 0px;
+	}
+
+	.right-addon input {
+		padding-right: 30px;
+	}
+</style>
+
+<form id="CreateAndEditForm">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<label asp-for="FirstName">
+
+				</label>
+				<input class="form-control form-control-sm" type="text" />
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="form-group">
+				<label asp-for="LastName">
+
+				</label>
+				<input class="form-control form-control-sm" type="text" />
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<label asp-for="UserName">
+
+				</label>
+				<input class="form-control form-control-sm" type="text" />
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="form-group">
+				<label asp-for="Password">
+				</label>
+				<div class="inner-addon right-addon">
+					<a href="#" onmousedown="EyeButtonMouseDownFunction()" onmouseup="EyeButtonMouseUpFunction()"><i class="fa fa-eye"></i></a>
+					<input id="passwordInput" class="form-control form-control-sm" type="password" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<label asp-for="Email">
+
+				</label>
+				<input class="form-control form-control-sm" type="text" />
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="form-group">
+				<label asp-for="PhoneNumber">
+
+				</label>
+				<input class="form-control form-control-sm" type="text" />
+			</div>
+		</div>
+	</div>
+	<hr />
+	<button type="submit" class="btn btn-primary btn-sm float-right"><span class="fa fa-paper-plane"></span> @(Model.Id == null ? "submit" : "Edit")</button>
+</form>

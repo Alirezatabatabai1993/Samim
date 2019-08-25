@@ -4,8 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Samim.DataLayer.AppUser;
 using Samim.PresentationLayer.Models;
+using Samim.ViewModel;
 
 namespace Samim.PresentationLayer.Controllers
 {
