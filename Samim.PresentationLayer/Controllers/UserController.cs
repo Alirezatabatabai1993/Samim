@@ -23,7 +23,7 @@ namespace Samim.PresentationLayer.Controllers
 		public IActionResult Index()
 		{
 			var users = _userRepository.GetAllApplicationUsers();
-			return View(users.Select(x=>new VMUserIndex(x)));
+			return View(users.Select(x => new VMUserIndex(x)));
 		}
 
 		[HttpGet]
@@ -36,7 +36,7 @@ namespace Samim.PresentationLayer.Controllers
 		public IActionResult Create(VMUserCreateAndEdit vMUserCreate)
 		{
 			if (string.IsNullOrEmpty(vMUserCreate.Password))
-				ModelState.AddModelError("Password","The password field is reuired.");
+				ModelState.AddModelError("Password", "The password field is reuired.");
 			if (ModelState.IsValid)
 			{
 				_userRepository.AddApplicationUser(vMUserCreate);
@@ -63,13 +63,16 @@ namespace Samim.PresentationLayer.Controllers
 		[HttpPost]
 		public IActionResult Edit(VMUserCreateAndEdit vMUserEdit)
 		{
-			var d = ModelState.PopulateErrors();
 			if (ModelState.IsValid)
 			{
+				if (!string.IsNullOrEmpty(vMUserEdit.Password))
+				{
+					_userRepository.ResetApplicationUserPassword(vMUserEdit.Id, vMUserEdit.Password);
+				}
 				_userRepository.EditApplicationUser(vMUserEdit);
 				return Json(new { success = true });
 			}
-			
+
 			return Json(new { success = false, errors = ModelState.PopulateErrors() });
 		}
 

@@ -17,6 +17,7 @@ namespace Samim.DataLayer.UnitOfWork.UserRepo
 		bool DeleteApplicationUser(string id);
 		ApplicationUser GetApplicationUserById(string id);
 		bool EditApplicationUser(VMUserCreateAndEdit vMUserEdit);
+		bool ResetApplicationUserPassword(string id, string newPassword);
 	}
 	public class UserRepository : BaseRepository<ApplicationUser>, IUserRepository
 	{
@@ -75,6 +76,21 @@ namespace Samim.DataLayer.UnitOfWork.UserRepo
 				applicationUser.PhoneNumber = vMUserEdit.PhoneNumber;
 				_userManager.UpdateAsync(applicationUser).GetAwaiter().GetResult();
 
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		public bool ResetApplicationUserPassword(string id,string newPassword)
+		{
+			try
+			{
+				var userApplication = GetApplicationUserById(id);
+				_userManager.RemovePasswordAsync(userApplication).GetAwaiter().GetResult();
+				_userManager.AddPasswordAsync(userApplication, newPassword).GetAwaiter().GetResult();
 				return true;
 			}
 			catch

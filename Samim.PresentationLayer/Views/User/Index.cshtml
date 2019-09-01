@@ -3,7 +3,7 @@
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/_Layout.cshtml";
-	int count = 0;
+	//int count = 0;
 }
 
 
@@ -24,26 +24,30 @@
 	.right-addon input {
 		padding-right: 30px;
 	}
+
+	.sortArrow{
+		margin-left:4px;
+	}
 </style>
 
 <h1>Users</h1>
 
 <button onclick="OpenCreateModal()" class="btn float-right"><span class="fa fa-user-plus"></span></button>
 
-<table class="table">
+<table id="userGrid" class="table">
 	<thead>
 		<tr class="table-primary">
 			<th scope="col">
-				#
+				#<span onclick="sortBasedOnNumberFunction()" id="sortBasedOnNumber" class="sortArrow fa fa-arrow-down fa-xs"></span>
 			</th>
 			<th scope="row">
-				First Name
+				First Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
 			</th>
 			<th scope="row">
-				Last Name
-			</th>
-			<th scope="col">
-				User Name
+				Last Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
+			</th>									  
+			<th scope="col">						  
+				User Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
 			</th>
 			<th scope="col">
 				Email
@@ -57,11 +61,11 @@
 	</thead>
 	@foreach (var item in Model)
 	{
-		count += 1;
+		//count += 1;
 		<tbody>
 			<tr>
 				<td scope="row">
-					@count
+					@*@count*@
 				</td>
 				<td scope="row">
 					@item.FirstName
@@ -82,7 +86,7 @@
 					<button class="btn-danger" onclick="OpenDeleteModal('@item.Id','@item.UserName')"><span class="fa fa-trash-o fa-sm"></span></button>
 				</td>
 				<td>
-					<button class="btn-primary" onclick="OpenEditModal('@item.Id')"><span class="fa fa-pencil-square-o fa-sm"></span></button>
+					<button class="btn-primary" onclick="OpenEditModal('@item.Id','@item.UserName')"><span class="fa fa-pencil-square-o fa-sm"></span></button>
 				</td>
 			</tr>
 		</tbody>
@@ -135,6 +139,20 @@
 <input id="NewPasswordValue" type="hidden" />
 
 <script type="text/javascript">
+
+	function sortBasedOnNumberFunction() {
+		var sortArrow = document.getElementById("sortBasedOnNumber");
+		var numberOfRowsInTable = $('#userGrid tr').length;
+		if (sortArrow.classList.contains("fa-arrow-up")) {
+			for (var i = 0; i < numberOfRowsInTable; i++) {
+
+			}
+			//var counter=numberOfRowsInTable
+			sortArrow.classList.replace("fa-arrow-up", "fa-arrow-down");
+		} else {
+			sortArrow.classList.replace("fa-arrow-down", "fa-arrow-up");
+		}
+	}
 
 	function EyeButtonMouseDownFunction() {
 		document.getElementById("passwordInput").type = "text";
@@ -190,8 +208,8 @@
 		})
 	}
 
-	function OpenEditModal(id) {
-		$("#CreateAndEditModalTitle").html("Edit User");
+	function OpenEditModal(id,userName) {
+		$("#CreateAndEditModalTitle").html("Edit " + userName);
 		$("#EditingAnddeletingItemId").val(id);
 		$.ajax({
 			type: "GET",
@@ -208,8 +226,7 @@
 		var CreateAndEditForm = $("#CreateAndEditForm");
 		var createAndEditFormSerializedData = CreateAndEditForm.serialize();
 		var hiddenPasswordValue = $("#NewPasswordValue").val();
-		debugger
-		var data = createAndEditFormSerializedData+"password="+ hiddenPasswordValue;
+		var data = createAndEditFormSerializedData+"&password="+ hiddenPasswordValue;
 		var modal = $("#CreateAndEditModal");
 		$.ajax({
 			type: "POST",
