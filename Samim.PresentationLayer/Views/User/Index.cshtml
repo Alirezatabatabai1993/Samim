@@ -1,14 +1,34 @@
 ﻿@using Samim.PresentationLayer;
-@model Samim.ViewModel.VMUser
+@model IEnumerable<Samim.ViewModel.VMUserIndex>
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	int count = 0;
 }
 
+
+<style>
+	.inner-addon {
+		position: relative;
+	}
+
+		.inner-addon .fa {
+			position: absolute;
+			padding: 10px;
+		}
+
+	.right-addon .fa {
+		right: 0px;
+	}
+
+	.right-addon input {
+		padding-right: 30px;
+	}
+</style>
+
 <h1>Users</h1>
 
-<a onclick="OpenCreateModal()" href="#" class="btn float-right"><span class="fa fa-user-plus"></span></a>
+<button onclick="OpenCreateModal()" class="btn float-right"><span class="fa fa-user-plus"></span></button>
 
 <table class="table">
 	<thead>
@@ -31,9 +51,11 @@
 			<th scope="col">
 				Phone Number
 			</th>
+			<th></th>
+			<th></th>
 		</tr>
 	</thead>
-	@foreach (var item in Model.Users)
+	@foreach (var item in Model)
 	{
 		count += 1;
 		<tbody>
@@ -56,6 +78,12 @@
 				<td scope="row">
 					@item.PhoneNumber
 				</td>
+				<td>
+					<button class="btn-danger" onclick="OpenDeleteModal('@item.Id','@item.UserName')"><span class="fa fa-trash-o fa-sm"></span></button>
+				</td>
+				<td>
+					<button class="btn-primary" onclick="OpenEditModal('@item.Id')"><span class="fa fa-pencil-square-o fa-sm"></span></button>
+				</td>
 			</tr>
 		</tbody>
 	}
@@ -65,28 +93,180 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title"> @(Model.UserCreateAndEdit.Id == null ? "Create User" : "Edit User")</h4>
+				<h4 id="CreateAndEditModalTitle" class="modal-title"></h4>
 				<button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
 			</div>
-			<div class="modal-body">
-				<partial name="_Create" model="Model.UserCreateAndEdit" />
+			<div id="CreateAndEditModalBody" class="modal-body">
 			</div>
 		</div>
-
 	</div>
 </div>
+
+<div id="DeleteModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 id="deleteModalTitle" class="modal-title"></h4>
+				<button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
+			</div>
+			<div id="deleteModalBody" class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="deleteButton" class="btn btn-danger float-right" onclick="DeleteButtonClicked()"><span class="fa fa-check"></span></button>
+				<button type="button" class="btn btn-primary float-right" data-dismiss="modal"><span class="fa fa-ban"></span></button>
+			</div>
+		</div>
+	</div>
+</div>
+<input id="EditingAnddeletingItemId" type="hidden" />
+
+<div id="EditPasswordModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 id="EditPasswordModalTitle" class="modal-title"></h4>
+				<button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
+			</div>
+			<div id="EditPasswordModalBody" class="modal-body">
+			</div>
+		</div>
+	</div>
+</div>
+<input id="NewPasswordValue" type="hidden" />
 
 <script type="text/javascript">
 
 	function EyeButtonMouseDownFunction() {
 		document.getElementById("passwordInput").type = "text";
 	}
+
 	function EyeButtonMouseUpFunction() {
 		document.getElementById("passwordInput").type = "password";
 	}
 
+	function SetNewPasswordToHiddenInput(pass) {
+		$("#NewPasswordValue").val(pass);
+	}
+
+	$(document).ready(function () {
+		$('#CreateAndEditModal').on('hidden.bs.modal', function (e) {
+			$('#CreateAndEditForm').trigger("reset");
+			$('#CreateAndEditForm').find("span.validation").html("").replaceAll();
+		})
+	})
+
+	function OpenEditPasswordModal() {
+		var id = $("#EditingAnddeletingItemId").val();
+		$.ajax({
+			type: "GET",
+			url: "@SamimRouteManager.User.EditPassword()",
+			data: { id: id },
+			success: function (response) {
+				$("#EditPasswordModalBody").html(response);
+				$("#CreateAndEditModal").modal("hide");
+				$("#EditPasswordModal").modal("show");
+			}
+		});
+	}
+
+	function OpenDeleteModal(Id, UserName) {
+		$("#deleteModalTitle").html("Delete " + UserName);
+		$("#deleteModalBody").html("Are you positive about deleting " + UserName + " ?");
+		$("#EditingAnddeletingItemId").val(Id);
+		$("#DeleteModal").modal();
+	}
+
+	function DeleteButtonClicked() {
+		var id = document.getElementById("EditingAnddeletingItemId").value;
+		$.ajax({
+			type: "POST",
+			data: { id: id },
+			url: "@SamimRouteManager.User.Delete()",
+			success: function (response) {
+				if (response.success) {
+					window.location.reload();
+				}
+			}
+		})
+	}
+
+	function OpenEditModal(id) {
+		$("#CreateAndEditModalTitle").html("Edit User");
+		$("#EditingAnddeletingItemId").val(id);
+		$.ajax({
+			type: "GET",
+			url: "@SamimRouteManager.User.Edit()",
+			data: { id: id },
+			success: function (response) {
+				$("#CreateAndEditModalBody").html(response);
+				$("#CreateAndEditModal").modal("show");
+			}
+		});
+	}
+
+	function EditButtonClicked() {
+		var CreateAndEditForm = $("#CreateAndEditForm");
+		var createAndEditFormSerializedData = CreateAndEditForm.serialize();
+		var hiddenPasswordValue = $("#NewPasswordValue").val();
+		debugger
+		var data = createAndEditFormSerializedData+"password="+ hiddenPasswordValue;
+		var modal = $("#CreateAndEditModal");
+		$.ajax({
+			type: "POST",
+			data: data ,
+			url:"@SamimRouteManager.User.Edit()",
+			success: function (response) {
+				CreateAndEditForm.find("span.validation").html("").replaceAll();
+				var errors = response.errors;
+				if (response.success) {
+					modal.modal("hide");
+					window.location.reload();
+				}
+				else {
+					debugger
+					for (var i = 0; i < errors.length; i++) {
+						var spanElement = document.getElementById("span" + errors[i].key);
+						spanElement.innerHTML = errors[i].value;
+					}
+				}
+			}
+		});
+	}
 
 	function OpenCreateModal() {
-		$("#CreateAndEditModal").modal();
+		$("#CreateAndEditModalTitle").html("Create User");
+		$.ajax({
+			type: "GET",
+			url: "@SamimRouteManager.User.Create()",
+			success: function (response) {
+				$("#CreateAndEditModalBody").html(response);
+				$("#CreateAndEditModal").modal("show");
+			}
+		});
+	}
+
+	function SubmitButtonClicked() {
+		var CreateAndEditForm = $("#CreateAndEditForm");
+		var createFormSerializedData = CreateAndEditForm.serialize();
+		var modal = $("#CreateAndEditModal");
+		$.ajax({
+			type: "POST",
+			data: createFormSerializedData,
+			url:"@SamimRouteManager.User.Create()",
+			success: function (response) {
+				CreateAndEditForm.find("span.validation").html("").replaceAll();
+				var errors = response.errors;
+				if (response.success) {
+					modal.modal("hide");
+					window.location.reload();
+				}
+				else {
+					for (var i = 0; i < errors.length; i++) {
+						var spanElement = document.getElementById("span" + errors[i].key);
+						spanElement.innerHTML = errors[i].value;
+					}
+				}
+			}
+		});
 	}
 </script>

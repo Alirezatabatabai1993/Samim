@@ -37,7 +37,7 @@
 </style>
 
 <script type="text/javascript">
-	$("body").on("click", "a.SideBarMenuAnchorTag", function (event) {
+	$("body").on("click", "a .SideBarMenuAnchorTag", function (event) {
 		var anchorTagId = event.target.id;
 		var spanTagElement = document.getElementById("span" + anchorTagId);
 		var divTagElement = document.getElementById("div" + anchorTagId);

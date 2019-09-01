@@ -35,7 +35,16 @@ namespace Samim.PresentationLayer
 
 			services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
 
-			services.AddIdentity<ApplicationUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
+			services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+			{
+				options.Stores.MaxLengthForKeys = 128;
+				options.Password.RequireUppercase = false;
+				options.Password.RequireNonAlphanumeric = false;
+				options.Password.RequireLowercase = false;
+				options.Password.RequiredLength = 3;
+				options.Password.RequireDigit = false;
+				options.Password.RequiredUniqueChars = 0;
+			})
 			   .AddEntityFrameworkStores<SamimDbContext>().AddDefaultUI()
 			   .AddDefaultTokenProviders();
 

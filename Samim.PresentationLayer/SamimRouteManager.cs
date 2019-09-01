@@ -9,6 +9,18 @@
 			{
 				return string.Format("/{0}/Create", Controller);
 			}
+			public static string Delete()
+			{
+				return string.Format("/{0}/Delete", Controller);
+			}
+			public static string Edit()
+			{
+				return string.Format("/{0}/Edit", Controller);
+			}
+			public static string EditPassword()
+			{
+				return string.Format("/{0}/EditPassword", Controller);
+			}
 		}
 	}
 }
