@@ -1,33 +1,32 @@
 ﻿@using Samim.PresentationLayer;
 @model IEnumerable<Samim.ViewModel.VMUserIndex>
 @{
-	ViewData["Title"] = "Index";
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	//int count = 0;
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
 <style>
-	.inner-addon {
-		position: relative;
-	}
+    .inner-addon {
+        position: relative;
+    }
 
-		.inner-addon .fa {
-			position: absolute;
-			padding: 10px;
-		}
+        .inner-addon .fa {
+            position: absolute;
+            padding: 10px;
+        }
 
-	.right-addon .fa {
-		right: 0px;
-	}
+    .right-addon .fa {
+        right: 0px;
+    }
 
-	.right-addon input {
-		padding-right: 30px;
-	}
+    .right-addon input {
+        padding-right: 30px;
+    }
 
-	.sortArrow{
-		margin-left:4px;
-	}
+    .sortArrow {
+        margin-left: 4px;
+    }
 </style>
 
 <h1>Users</h1>
@@ -35,106 +34,105 @@
 <button onclick="OpenCreateModal()" class="btn float-right"><span class="fa fa-user-plus"></span></button>
 
 <table id="userGrid" class="table">
-	<thead>
-		<tr class="table-primary">
-			<th scope="col">
-				#<span onclick="sortBasedOnNumberFunction()" id="sortBasedOnNumber" class="sortArrow fa fa-arrow-down fa-xs"></span>
-			</th>
-			<th scope="row">
-				First Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
-			</th>
-			<th scope="row">
-				Last Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
-			</th>									  
-			<th scope="col">						  
-				User Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
-			</th>
-			<th scope="col">
-				Email
-			</th>
-			<th scope="col">
-				Phone Number
-			</th>
-			<th></th>
-			<th></th>
-		</tr>
-	</thead>
-	@foreach (var item in Model)
-	{
-		//count += 1;
-		<tbody>
-			<tr>
-				<td scope="row">
-					@*@count*@
-				</td>
-				<td scope="row">
-					@item.FirstName
-				</td>
-				<td scope="row">
-					@item.LastName
-				</td>
-				<td scope="row">
-					@item.UserName
-				</td>
-				<td scope="row">
-					@item.Email
-				</td>
-				<td scope="row">
-					@item.PhoneNumber
-				</td>
-				<td>
-					<button class="btn-danger" onclick="OpenDeleteModal('@item.Id','@item.UserName')"><span class="fa fa-trash-o fa-sm"></span></button>
-				</td>
-				<td>
-					<button class="btn-primary" onclick="OpenEditModal('@item.Id','@item.UserName')"><span class="fa fa-pencil-square-o fa-sm"></span></button>
-				</td>
-			</tr>
-		</tbody>
-	}
+    <thead>
+        <tr class="table-primary">
+            <th scope="col">
+                #<span onclick="sortBasedOnNumberFunction()" id="sortBasedOnNumber" class="sortArrow fa fa-arrow-down fa-xs"></span>
+            </th>
+            <th scope="row">
+                First Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
+            </th>
+            <th scope="row">
+                Last Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
+            </th>
+            <th scope="col">
+                User Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
+            </th>
+            <th scope="col">
+                Email
+            </th>
+            <th scope="col">
+                Phone Number
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tbody>
+            <tr>
+                <td id="hashColumn" scope="row">
+                    @item.RowNumber
+                </td>
+                <td scope="row">
+                    @item.FirstName
+                </td>
+                <td scope="row">
+                    @item.LastName
+                </td>
+                <td scope="row">
+                    @item.UserName
+                </td>
+                <td scope="row">
+                    @item.Email
+                </td>
+                <td scope="row">
+                    @item.PhoneNumber
+                </td>
+                <td>
+                    <button class="btn-danger" onclick="OpenDeleteModal('@item.Id','@item.UserName')"><span class="fa fa-trash-o fa-sm"></span></button>
+                </td>
+                <td>
+                    <button class="btn-primary" onclick="OpenEditModal('@item.Id','@item.UserName')"><span class="fa fa-pencil-square-o fa-sm"></span></button>
+                </td>
+            </tr>
+        </tbody>
+    }
 </table>
 
 <div id="CreateAndEditModal" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 id="CreateAndEditModalTitle" class="modal-title"></h4>
-				<button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
-			</div>
-			<div id="CreateAndEditModalBody" class="modal-body">
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="CreateAndEditModalTitle" class="modal-title"></h4>
+                <button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
+            </div>
+            <div id="CreateAndEditModalBody" class="modal-body">
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="DeleteModal" class="modal fade" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 id="deleteModalTitle" class="modal-title"></h4>
-				<button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
-			</div>
-			<div id="deleteModalBody" class="modal-body">
-			</div>
-			<div class="modal-footer">
-				<button type="button" id="deleteButton" class="btn btn-danger float-right" onclick="DeleteButtonClicked()"><span class="fa fa-check"></span></button>
-				<button type="button" class="btn btn-primary float-right" data-dismiss="modal"><span class="fa fa-ban"></span></button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="deleteModalTitle" class="modal-title"></h4>
+                <button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
+            </div>
+            <div id="deleteModalBody" class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="deleteButton" class="btn btn-danger float-right" onclick="DeleteButtonClicked()"><span class="fa fa-check"></span></button>
+                <button type="button" class="btn btn-primary float-right" data-dismiss="modal"><span class="fa fa-ban"></span></button>
+            </div>
+        </div>
+    </div>
 </div>
 <input id="EditingAnddeletingItemId" type="hidden" />
 
 <div id="EditPasswordModal" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 id="EditPasswordModalTitle" class="modal-title"></h4>
-				<button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
-			</div>
-			<div id="EditPasswordModalBody" class="modal-body">
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="EditPasswordModalTitle" class="modal-title"></h4>
+                <button type="button" class="btn btn-default float-right" data-dismiss="modal"><span class="fa fa-times"></span></button>
+            </div>
+            <div id="EditPasswordModalBody" class="modal-body">
+            </div>
+        </div>
+    </div>
 </div>
 <input id="NewPasswordValue" type="hidden" />
 
@@ -142,12 +140,16 @@
 
 	function sortBasedOnNumberFunction() {
 		var sortArrow = document.getElementById("sortBasedOnNumber");
-		var numberOfRowsInTable = $('#userGrid tr').length;
-		if (sortArrow.classList.contains("fa-arrow-up")) {
-			for (var i = 0; i < numberOfRowsInTable; i++) {
+        if (sortArrow.classList.contains("fa-arrow-up")) {
+            $.ajax({
+                type: "GET",
+                url: "@SamimRouteManager.User.Index()",
+                data: "orderBy=RowNumber&orderType=DESC",
+                success: Function (response){
 
-			}
-			//var counter=numberOfRowsInTable
+                }
+            });
+        }
 			sortArrow.classList.replace("fa-arrow-up", "fa-arrow-down");
 		} else {
 			sortArrow.classList.replace("fa-arrow-down", "fa-arrow-up");

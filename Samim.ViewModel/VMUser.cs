@@ -8,72 +8,76 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Samim.ViewModel
 {
-	public class VMUserIndex
-	{
-		public VMUserIndex()
-		{
+    public class VMUserIndex
+    {
+        private static int counter = 0;
+        public VMUserIndex()
+        {
 
-		}
-		public VMUserIndex(ApplicationUser applicationUser)
-		{
-			Id = applicationUser.Id;
-			FirstName = applicationUser.FirstName;
-			LastName = applicationUser.LastName;
-			UserName = applicationUser.UserName;
-			Email = applicationUser.Email;
-			PhoneNumber = applicationUser.PhoneNumber;
-		}
-		public string Id { get; set; }
-		public string FirstName { get; set; }
-		public string LastName { get; set; }
-		public string UserName { get; set; }
-		public string Email { get; set; }
-		public string PhoneNumber { get; set; }
-	}
+        }
+        public VMUserIndex(ApplicationUser applicationUser)
+        {
+            counter += 1;
+            RowNumber = counter;
+            Id = applicationUser.Id;
+            FirstName = applicationUser.FirstName;
+            LastName = applicationUser.LastName;
+            UserName = applicationUser.UserName;
+            Email = applicationUser.Email;
+            PhoneNumber = applicationUser.PhoneNumber;
+        }
+        public int RowNumber { get; set; }
+        public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+    }
 
-	public class VMUserCreateAndEdit
-	{
-		public VMUserCreateAndEdit()
-		{
+    public class VMUserCreateAndEdit
+    {
+        public VMUserCreateAndEdit()
+        {
 
-		}
-		public VMUserCreateAndEdit(ApplicationUser applicationUser)
-		{
-			Id = applicationUser.Id;
-			FirstName = applicationUser.FirstName;
-			LastName = applicationUser.LastName;
-			UserName = applicationUser.UserName;
-			Email = applicationUser.Email;
-			PhoneNumber = applicationUser.PhoneNumber;
-		}
-		public string Id { get; set; }
-		[Required]
-		[Display(Name = "First Name")]
-		public string FirstName { get; set; }
-		[Required]
-		[Display(Name = "Last Name")]
-		public string LastName { get; set; }
-		[Required]
-		[Display(Name = "User Name")]
-		public string UserName { get; set; }
-		//[Required]
-		public string Password { get; set; }
-		public string Email { get; set; }
-		[Display(Name = "Phone Number")]
-		public string PhoneNumber { get; set; }
-	}
+        }
+        public VMUserCreateAndEdit(ApplicationUser applicationUser)
+        {
+            Id = applicationUser.Id;
+            FirstName = applicationUser.FirstName;
+            LastName = applicationUser.LastName;
+            UserName = applicationUser.UserName;
+            Email = applicationUser.Email;
+            PhoneNumber = applicationUser.PhoneNumber;
+        }
+        public string Id { get; set; }
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+        [Required]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+        //[Required]
+        public string Password { get; set; }
+        public string Email { get; set; }
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
+    }
 
-	public class VMUserEditPassword
-	{
-		public VMUserEditPassword()
-		{
+    public class VMUserEditPassword
+    {
+        public VMUserEditPassword()
+        {
 
-		}
-		public VMUserEditPassword(ApplicationUser applicationUser)
-		{
-			UserName = applicationUser.UserName;
-		}
-		public string UserName { get; set; }
-		public string Password { get; set; }
-	}
+        }
+        public VMUserEditPassword(ApplicationUser applicationUser)
+        {
+            UserName = applicationUser.UserName;
+        }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+    }
 }

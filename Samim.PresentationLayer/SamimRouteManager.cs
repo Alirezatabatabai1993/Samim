@@ -5,7 +5,11 @@
 		public static class User
 		{
 			private static string Controller = "User";
-			public static string Create()
+            public static string Index()
+            {
+                return string.Format("/{0}/Index", Controller);
+            }
+            public static string Create()
 			{
 				return string.Format("/{0}/Create", Controller);
 			}
