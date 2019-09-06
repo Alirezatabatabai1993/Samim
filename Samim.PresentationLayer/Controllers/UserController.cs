@@ -22,7 +22,8 @@ namespace Samim.PresentationLayer.Controllers
         }
         public IActionResult Index(string orderBy = "", string orderType = "")
         {
-            List<VMUserIndex> users = _userRepository.GetAllApplicationUsers().Select(x => new VMUserIndex(x));
+            int rowCounter = 0;
+            List<VMUserIndex> users = _userRepository.GetAllApplicationUsers().Select(x => new VMUserIndex(x, rowCounter += 1)).ToList();
             if (!string.IsNullOrEmpty(orderBy))
             {
                 users = string.IsNullOrEmpty(orderType) ?

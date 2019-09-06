@@ -10,15 +10,13 @@ namespace Samim.ViewModel
 {
     public class VMUserIndex
     {
-        private static int counter = 0;
         public VMUserIndex()
         {
 
         }
-        public VMUserIndex(ApplicationUser applicationUser)
+        public VMUserIndex(ApplicationUser applicationUser,int count)
         {
-            counter += 1;
-            RowNumber = counter;
+            RowNumber = count;
             Id = applicationUser.Id;
             FirstName = applicationUser.FirstName;
             LastName = applicationUser.LastName;

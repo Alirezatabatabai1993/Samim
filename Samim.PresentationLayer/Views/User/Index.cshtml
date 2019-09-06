@@ -60,9 +60,9 @@
     </thead>
     @foreach (var item in Model)
     {
-        <tbody>
+        <tbody id="userGridtbody">
             <tr>
-                <td id="hashColumn" scope="row">
+                <td scope="row">
                     @item.RowNumber
                 </td>
                 <td scope="row">
@@ -141,17 +141,32 @@
 	function sortBasedOnNumberFunction() {
 		var sortArrow = document.getElementById("sortBasedOnNumber");
         if (sortArrow.classList.contains("fa-arrow-up")) {
-            $.ajax({
+            debugger
+            //need work
+                var x = document.getElementById("userGrid").rows.cells.contains("");
+            $("#userGrid td").remove();
+            var userTable = document.getElementById("userGrid");
+            var userGridRowCount = userGrid.rows.length - 1;
+            for (var i = 0; i < userGridRowCount; i++) {
+                 var row = userTable.insertRow(1);
+                 var cell1 = row.insertCell(0);
+                 var cell2 = row.insertCell(1);
+                 cell1.innerHTML = "NEW CELL1";
+                cell2.innerHTML = "NEW CELL2";
+                //userTable.remove();
+                //var rows = table.getElementsByTagName('tr');
+            }
+            @*$.ajax({
                 type: "GET",
                 url: "@SamimRouteManager.User.Index()",
-                data: "orderBy=RowNumber&orderType=DESC",
-                success: Function (response){
+                data: "orderBy=RowNumber&orderType=DESC"
+                //success: Function (response){
 
-                }
-            });
-        }
+                //}
+            });*@
 			sortArrow.classList.replace("fa-arrow-up", "fa-arrow-down");
-		} else {
+        }
+		 else {
 			sortArrow.classList.replace("fa-arrow-down", "fa-arrow-up");
 		}
 	}
