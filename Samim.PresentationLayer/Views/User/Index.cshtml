@@ -1,5 +1,5 @@
 ﻿@using Samim.PresentationLayer;
-@model IEnumerable<Samim.ViewModel.VMUserIndex>
+@model Samim.ViewModel.VMUser
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -27,6 +27,10 @@
     .sortArrow {
         margin-left: 4px;
     }
+
+    .pagination {
+        margin-top: 10%;
+    }
 </style>
 
 <h1>Users</h1>
@@ -37,16 +41,16 @@
     <thead>
         <tr class="table-primary">
             <th scope="col">
-                #<span onclick="sortBasedOnNumberFunction()" id="sortBasedOnNumber" class="sortArrow fa fa-arrow-down fa-xs"></span>
+                #<span onclick="SortFunction('sortBasedOnNumber','RowNumber')" id="sortBasedOnNumber" class="sortArrow fa fa-arrow-down fa-xs"></span>
             </th>
             <th scope="row">
-                First Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
+                First Name<span onclick="SortFunction('sortBasedOnFirstName','FirstName')" id="sortBasedOnFirstName" class="sortArrow fa fa-arrow-right fa-xs"></span>
             </th>
             <th scope="row">
-                Last Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
+                Last Name<span onclick="SortFunction('sortBasedOnLastName','LastName')" id="sortBasedOnLastName" class="sortArrow fa fa-arrow-right fa-xs"></span>
             </th>
             <th scope="col">
-                User Name<span class="sortArrow fa fa-arrow-down fa-xs"></span>
+                User Name<span onclick="SortFunction('sortBasedOnUserName','UserName')" id="sortBasedOnUserName" class="sortArrow fa fa-arrow-right fa-xs"></span>
             </th>
             <th scope="col">
                 Email
@@ -58,7 +62,7 @@
             <th></th>
         </tr>
     </thead>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Users)
     {
         <tbody id="userGridtbody">
             <tr>
@@ -90,6 +94,53 @@
         </tbody>
     }
 </table>
+
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination pagination-sm justify-content-center">
+        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        @if (Model.CurrentPageNumber != Model.FirstPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" tabindex="-1">@Model.FirstPage</a>
+            </li>
+        }
+        @if (Model.HasTwoPreviousPage)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1"><span class="fa fa-ellipsis-h"></span></a>
+            </li>
+        }
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item"><a class="page-link" href="#">@(Model.CurrentPageNumber - 1)</a></li>
+        }
+        <li class="page-item active"><a class="page-link" href="#">@Model.CurrentPageNumber</a></li>
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item"><a class="page-link" href="#">@(Model.CurrentPageNumber + 1)</a></li>
+        }
+        @if (Model.HasTwoNextPage)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1"><span class="fa fa-ellipsis-h"></span></a>
+            </li>
+        }
+        @if (Model.CurrentPageNumber != Model.LastPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" tabindex="-1">@Model.LastPage</a>
+            </li>
+        }
+        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+            <a class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</nav>
+
 
 <div id="CreateAndEditModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
@@ -138,36 +189,97 @@
 
 <script type="text/javascript">
 
-	function sortBasedOnNumberFunction() {
-		var sortArrow = document.getElementById("sortBasedOnNumber");
-        if (sortArrow.classList.contains("fa-arrow-up")) {
-            debugger
-            //need work
-                var x = document.getElementById("userGrid").rows.cells.contains("");
-            $("#userGrid td").remove();
-            var userTable = document.getElementById("userGrid");
-            var userGridRowCount = userGrid.rows.length - 1;
-            for (var i = 0; i < userGridRowCount; i++) {
-                 var row = userTable.insertRow(1);
-                 var cell1 = row.insertCell(0);
-                 var cell2 = row.insertCell(1);
-                 cell1.innerHTML = "NEW CELL1";
-                cell2.innerHTML = "NEW CELL2";
-                //userTable.remove();
-                //var rows = table.getElementsByTagName('tr');
+    function MakeTableRowsBasedOnSelectedSortMethodFunction(rows) {
+         for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        row.email = row.email == null ? "" : row.email;
+                        row.phoneNumber = row.phoneNumber == null ? "" : row.phoneNumber;
+                        $('#userGridtbody').append
+                            ("<tr>"+
+                            "<td>" + row.rowNumber   + "</td>" +
+                            "<td>" + row.firstName   + "</td>" +
+                            "<td>" + row.lastName    + "</td>" +
+                            "<td>" + row.userName    + "</td>" +
+                            "<td>" + row.email       + "</td>" +
+                            "<td>" + row.phoneNumber + "</td>" +
+                            "<td>" + '<button class="btn-danger" onclick="OpenDeleteModal(' + "'" + row.id + "'" + ',' + "'" + row.userName + "'" + ')"><span class="fa fa-trash-o fa-sm"></span></button>'        + "</td>" +
+                            "<td>" + '<button class="btn-primary" onclick="OpenEditModal(' + "'" + row.id + "'" + ',' + "'" + row.userName + "'" + ')"><span class="fa fa-pencil-square-o fa-sm"></span></button>' + "</td>" +
+                            "</tr>");
+         }
+    }
+
+    function MakeOtherSortArrowsToPointRight(SelectedSort) {
+        var sortBasedOnNumber = document.getElementById("sortBasedOnNumber");
+        if (!(sortBasedOnNumber == SelectedSort)) {
+            if (sortBasedOnNumber.classList.contains("fa-arrow-up")) {
+                sortBasedOnNumber.classList.replace("fa-arrow-up", "fa-arrow-right");
+            } else if (sortBasedOnNumber.classList.contains("fa-arrow-down")) {
+                sortBasedOnNumber.classList.replace("fa-arrow-down", "fa-arrow-right");
             }
-            @*$.ajax({
+        }
+
+        var sortBasedOnFirstName = document.getElementById("sortBasedOnFirstName");
+        if (!(sortBasedOnFirstName == SelectedSort)) {
+            if (sortBasedOnFirstName.classList.contains("fa-arrow-up")) {
+                sortBasedOnFirstName.classList.replace("fa-arrow-up", "fa-arrow-right");
+            }else if (sortBasedOnFirstName.classList.contains("fa-arrow-down")) {
+                sortBasedOnFirstName.classList.replace("fa-arrow-down", "fa-arrow-right");
+            }
+        }
+
+        var sortBasedOnLastName = document.getElementById("sortBasedOnLastName");
+        if (!(sortBasedOnLastName == SelectedSort)) {
+            if (sortBasedOnLastName.classList.contains("fa-arrow-up")) {
+                sortBasedOnLastName.classList.replace("fa-arrow-up", "fa-arrow-right");
+            }else if (sortBasedOnLastName.classList.contains("fa-arrow-down")) {
+                sortBasedOnLastName.classList.replace("fa-arrow-down", "fa-arrow-right");
+            }
+        }
+
+        var sortBasedOnUserName = document.getElementById("sortBasedOnUserName");
+        if (!(sortBasedOnUserName == SelectedSort)) {
+            if (sortBasedOnUserName.classList.contains("fa-arrow-up")) {
+                sortBasedOnUserName.classList.replace("fa-arrow-up", "fa-arrow-right");
+            }else if (sortBasedOnUserName.classList.contains("fa-arrow-down")) {
+                sortBasedOnUserName.classList.replace("fa-arrow-down", "fa-arrow-right");
+            }
+        }
+    }
+
+    function SortFunction(sortBasedOn, orderBy) {
+		var sortArrow = document.getElementById(sortBasedOn);
+        MakeOtherSortArrowsToPointRight(sortArrow);
+        if (sortArrow.classList.contains("fa-arrow-up") || sortArrow.classList.contains("fa-arrow-right")) {
+            $.ajax({
                 type: "GET",
                 url: "@SamimRouteManager.User.Index()",
-                data: "orderBy=RowNumber&orderType=DESC"
-                //success: Function (response){
-
-                //}
-            });*@
-			sortArrow.classList.replace("fa-arrow-up", "fa-arrow-down");
+                data: "orderBy=" + orderBy + "&orderType=ASC",
+                success: function (response) {
+                    $('#userGridtbody tr').remove();
+                    MakeTableRowsBasedOnSelectedSortMethodFunction(response.rows);
+                }
+            });
+            if (sortArrow.classList.contains("fa-arrow-up")) {
+                sortArrow.classList.replace("fa-arrow-up", "fa-arrow-down");
+            } else if (sortArrow.classList.contains("fa-arrow-right")) {
+                sortArrow.classList.replace("fa-arrow-right", "fa-arrow-down");
+            }
         }
-		 else {
-			sortArrow.classList.replace("fa-arrow-down", "fa-arrow-up");
+        else {
+            $.ajax({
+                type: "GET",
+                url: "@SamimRouteManager.User.Index()",
+                data: "orderBy=" + orderBy + "&orderType=DESC",
+                success: function (response) {
+                    $('#userGridtbody tr').remove();
+                    MakeTableRowsBasedOnSelectedSortMethodFunction(response.rows);
+                }
+            });
+            if (sortArrow.classList.contains("fa-arrow-down")) {
+                sortArrow.classList.replace("fa-arrow-down", "fa-arrow-up");
+            } else if (sortArrow.classList.contains("fa-arrow-right")) {
+                sortArrow.classList.replace("fa-arrow-right", "fa-arrow-up");
+            }
 		}
 	}
 
@@ -257,7 +369,6 @@
 					window.location.reload();
 				}
 				else {
-					debugger
 					for (var i = 0; i < errors.length; i++) {
 						var spanElement = document.getElementById("span" + errors[i].key);
 						spanElement.innerHTML = errors[i].value;

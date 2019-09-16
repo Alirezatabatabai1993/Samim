@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,29 +8,55 @@ using Samim.DataLayer.Context;
 using Samim.DataLayer.Helpers;
 using Samim.DataLayer.UnitOfWork.UserRepo;
 using Samim.ViewModel;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace Samim.PresentationLayer.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
-        public UserController(IUserRepository userRepository)
+        private readonly IConfiguration _configuration;
+
+        public UserController(IUserRepository userRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
+            _configuration = configuration;
         }
-        public IActionResult Index(string orderBy = "", string orderType = "")
+        public IActionResult Index(string orderBy = "", string orderType = "", int pageNumber = 1)
         {
+            //Todo
             int rowCounter = 0;
+            var pageSize = _configuration.GetValue<int>("PageSize");
+            int skip = (pageSize * pageNumber) - pageSize;
             List<VMUserIndex> users = _userRepository.GetAllApplicationUsers().Select(x => new VMUserIndex(x, rowCounter += 1)).ToList();
+            var usersForPagination = users.Skip(skip).Take(pageSize).ToList();
+            var vmUser = new VMUser(
+                                    usersForPagination,
+                                    users.Count() % pageSize == 0 ? users.Count() / pageSize : users.Count() / pageSize + 1,
+                                    pageNumber);
             if (!string.IsNullOrEmpty(orderBy))
             {
-                users = string.IsNullOrEmpty(orderType) ?
-                    users.OrderBy(x => orderBy).ToList() :
-                    orderType == "DESC" ?
-                        users.OrderByDescending(x => orderBy).ToList() :
-                        users.OrderBy(x => orderBy).ToList();
+                switch (orderBy)
+                {
+                    case "RowNumber":
+                        usersForPagination = orderType == "DESC" ? usersForPagination.OrderByDescending(x => x.RowNumber).ToList() : usersForPagination.OrderBy(x => x.RowNumber).ToList();
+                        break;
+                    case "FirstName":
+                        usersForPagination = orderType == "DESC" ? usersForPagination.OrderByDescending(x => x.FirstName).ToList() : usersForPagination.OrderBy(x => x.FirstName).ToList();
+                        break;
+                    case "LastName":
+                        usersForPagination = orderType == "DESC" ? usersForPagination.OrderByDescending(x => x.LastName).ToList() : usersForPagination.OrderBy(x => x.LastName).ToList();
+                        break;
+                    case "UserName":
+                        usersForPagination = orderType == "DESC" ? usersForPagination.OrderByDescending(x => x.UserName).ToList() : usersForPagination.OrderBy(x => x.UserName).ToList();
+                        break;
+                    default:
+                        break;
+                }
+                return Json(new { rows = usersForPagination });
             }
-            return View(users);
+            return View(vmUser);
         }
 
         [HttpGet]
