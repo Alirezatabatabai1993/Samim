@@ -100,12 +100,12 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination pagination-sm justify-content-center">
         <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-            <a class="page-link" href="#" tabindex="-1">Previous</a>
+            <a class="page-link" href="@(SamimRouteManager.User.Index() + "?pageNumber=" + (Model.CurrentPageNumber - 1).ToString())" tabindex="-1">Previous</a>
         </li>
         @if (Model.CurrentPageNumber != Model.FirstPage)
         {
             <li class="page-item">
-                <a class="page-link" href="#" tabindex="-1">@Model.FirstPage</a>
+                <a class="page-link" href="@(SamimRouteManager.User.Index() + "?pageNumber=" + Model.FirstPage.ToString())" tabindex="-1">@Model.FirstPage</a>
             </li>
         }
         @if (Model.HasTwoPreviousPage)
@@ -114,14 +114,20 @@
                 <a class="page-link" tabindex="-1"><span class="fa fa-ellipsis-h"></span></a>
             </li>
         }
-        @if (Model.HasPreviousPage)
+        @if (Model.HasPreviousPage && Model.CurrentPageNumber - 1 != Model.FirstPage)
         {
-            <li class="page-item"><a class="page-link" href="#">@(Model.CurrentPageNumber - 1)</a></li>
+            <li class="page-item">
+                <a class="page-link" href="@(SamimRouteManager.User.Index() + "?pageNumber=" + (Model.CurrentPageNumber - 1).ToString())">@(Model.CurrentPageNumber - 1)</a>
+            </li>
         }
-        <li class="page-item active"><a class="page-link" href="#">@Model.CurrentPageNumber</a></li>
-        @if (Model.HasNextPage)
+        <li class="page-item active">
+            <a class="page-link" href="@(SamimRouteManager.User.Index() + "?pageNumber=" + Model.CurrentPageNumber.ToString())">@Model.CurrentPageNumber</a>
+        </li>
+        @if (Model.HasNextPage && Model.CurrentPageNumber + 1 != Model.LastPage)
         {
-            <li class="page-item"><a class="page-link" href="#">@(Model.CurrentPageNumber + 1)</a></li>
+            <li class="page-item">
+                <a class="page-link" href="@(SamimRouteManager.User.Index() + "?pageNumber=" + (Model.CurrentPageNumber + 1).ToString())">@(Model.CurrentPageNumber + 1)</a>
+            </li>
         }
         @if (Model.HasTwoNextPage)
         {
@@ -132,11 +138,11 @@
         @if (Model.CurrentPageNumber != Model.LastPage)
         {
             <li class="page-item">
-                <a class="page-link" href="#" tabindex="-1">@Model.LastPage</a>
+                <a class="page-link" href="@(SamimRouteManager.User.Index() + "?pageNumber=" + Model.LastPage)" tabindex="-1">@Model.LastPage</a>
             </li>
         }
         <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-            <a class="page-link" href="#">Next</a>
+            <a class="page-link" href="@(SamimRouteManager.User.Index() + "?pageNumber=" + (Model.CurrentPageNumber + 1).ToString())">Next</a>
         </li>
     </ul>
 </nav>
@@ -186,6 +192,8 @@
     </div>
 </div>
 <input id="NewPasswordValue" type="hidden" />
+
+<input id="pageNumber" type="hidden" value="@Model.CurrentPageNumber"/>
 
 <script type="text/javascript">
 
@@ -247,13 +255,14 @@
     }
 
     function SortFunction(sortBasedOn, orderBy) {
-		var sortArrow = document.getElementById(sortBasedOn);
+        var sortArrow = document.getElementById(sortBasedOn);
+        var pageNumberValue = $("#pageNumber").val();
         MakeOtherSortArrowsToPointRight(sortArrow);
         if (sortArrow.classList.contains("fa-arrow-up") || sortArrow.classList.contains("fa-arrow-right")) {
             $.ajax({
                 type: "GET",
                 url: "@SamimRouteManager.User.Index()",
-                data: "orderBy=" + orderBy + "&orderType=ASC",
+                data: "orderBy=" + orderBy + "&orderType=ASC" + "&pageNumber=" + pageNumberValue,
                 success: function (response) {
                     $('#userGridtbody tr').remove();
                     MakeTableRowsBasedOnSelectedSortMethodFunction(response.rows);
@@ -269,7 +278,7 @@
             $.ajax({
                 type: "GET",
                 url: "@SamimRouteManager.User.Index()",
-                data: "orderBy=" + orderBy + "&orderType=DESC",
+                data: "orderBy=" + orderBy + "&orderType=DESC" + "&pageNumber=" + pageNumberValue,
                 success: function (response) {
                     $('#userGridtbody tr').remove();
                     MakeTableRowsBasedOnSelectedSortMethodFunction(response.rows);
